@@ -219,13 +219,20 @@ def save_image(url, sess, filename='', directory=''):
                 break
         size = 0
         oldterminalsize = 0
+        # Replace dynamic terminal size with fixed 80
+        terminalsize = 80
         while True:
             chunk = response.read(2**20)
             if not chunk:
                 break
             fh.write(chunk)
             size += len(chunk)
-            terminalsize = max(os.get_terminal_size().columns - TERMINAL_MARGIN, 0)
+            # terminalsize = max(os.get_terminal_size().columns - TERMINAL_MARGIN, 0)
+            # Replaced with fixed 80 for environments like GitHub Actions
+            # Now:
+            # terminalsize = 80
+            # (Already applied above)
+            # No need to update terminal size here
             if oldterminalsize != terminalsize:
                 print(f'\r{"":<{terminalsize}}', end='')
                 oldterminalsize = terminalsize
@@ -250,7 +257,9 @@ def verify_image(dmgpath, cnkpath):
 
     with open(dmgpath, 'rb') as dmgf:
         for cnkcount, (cnksize, cnkhash) in enumerate(verify_chunklist(cnkpath), 1):
-            terminalsize = max(os.get_terminal_size().columns - TERMINAL_MARGIN, 0)
+            # Replace dynamic terminal size with fixed 80
+            # terminalsize = max(os.get_terminal_size().columns - TERMINAL_MARGIN, 0)
+            terminalsize = 80
             print(f'\r{f"Chunk {cnkcount} ({cnksize} bytes)":<{terminalsize}}', end='')
             sys.stdout.flush()
             cnk = dmgf.read(cnksize)
