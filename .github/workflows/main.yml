@@ -1,0 +1,26 @@
+name: Download macOS Ventura Recovery
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download-ventura:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Run macrecovery.py for Ventura
+      run: |
+        python3 macrecovery.py -b Mac-4B682C642B45593E -m 00000000000000000 download
+
+    - name: Upload recovery files
+      uses: actions/upload-artifact@v4
+      with:
+        name: ventura-recovery
+        path: recovery/*
